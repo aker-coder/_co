@@ -32,5 +32,46 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-	//// Replace this comment with your code.
+    // Decode instruction
+    // instruction[15] = opcode (0=A-instruction, 1=C-instruction)
+    // A-instruction: 0vvvvvvvvvvvvvvv (v=value)
+    // C-instruction: 111accccccdddjjj
+    
+    // Mux to select between instruction value (A-inst) and ALU output (C-inst)
+    Mux16(a=instruction, b=aluOut, sel=instruction[15], out=aRegisterIn);
+    
+    // A-instruction or C-instruction with a-bit load
+    Not(in=instruction[15], out=isAInst);
+    Or(a=isAInst, b=instruction[5], out=loadA);
+    ARegister(in=aRegisterIn, load=loadA, out=aRegisterOut, out[0..14]=addressM);
+    
+    // D Register
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    DRegister(in=aluOut, load=loadD, out=dRegisterOut);
+    
+    // ALU input selection (A or M)
+    Mux16(a=aRegisterOut, b=inM, sel=instruction[12], out=aOrM);
+    
+    // ALU
+    ALU(x=dRegisterOut, y=aOrM, zx=instruction[11], nx=instruction[10],
+        zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6],
+        out=aluOut, out=outM, zr=zr, ng=ng);
+    
+    // Write to memory
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    
+    // Jump logic
+    Not(in=ng, out=notNg);
+    Not(in=zr, out=notZr);
+    And(a=notNg, b=notZr, out=isPos);
+    
+    And(a=instruction[0], b=isPos, out=jgt);  // j3: jump if > 0
+    And(a=instruction[1], b=zr, out=jeq);    // j2: jump if == 0
+    And(a=instruction[2], b=ng, out=jlt);    // j1: jump if < 0
+    Or(a=jgt, b=jeq, out=jgtOrJeq);
+    Or(a=jgtOrJeq, b=jlt, out=shouldJump);
+    And(a=instruction[15], b=shouldJump, out=jumpFlag);
+    
+    // Program Counter
+    PC(in=aRegisterOut, load=jumpFlag, inc=true, reset=reset, out[0..14]=pc);
 }

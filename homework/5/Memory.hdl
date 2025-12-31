@@ -25,5 +25,32 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-	//// Replace this comment with your code.
+    // Decode address space using upper bits
+    // address[13..14]: 00/01=RAM, 10=Screen, 11=Keyboard
+    // Since address has 15 bits (0-14), we use address[13] and address[14]
+    
+    // RAM16K: address[0..13] (16K addresses)
+    RAM16K(in=in, load=loadRAM, address=address[0..13], out=ramOut);
+    
+    // Screen: address[0..12] (8K addresses)
+    Screen(in=in, load=loadScreen, address=address[0..12], out=screenOut);
+    
+    // Keyboard: read-only
+    Keyboard(out=kbdOut);
+    
+    // Decode logic for load signals
+    // If address[14] = 0: access RAM (0x0000-0x3FFF)
+    // If address[14] = 1 and address[13] = 0: access Screen (0x4000-0x5FFF)
+    // If address[14] = 1 and address[13] = 1: access Keyboard (0x6000)
+    
+    Not(in=address[14], out=notAddr14);
+    And(a=notAddr14, b=load, out=loadRAM);
+    And(a=address[14], b=address[13], out=selectKbd);
+    Not(in=address[13], out=notAddr13);
+    And(a=address[14], b=notAddr13, out=selectScreen);
+    And(a=selectScreen, b=load, out=loadScreen);
+    
+    // Output multiplexing: select which memory output to show
+    Mux16(a=ramOut, b=screenOut, sel=address[14], out=ramOrScreen);
+    Mux16(a=ramOrScreen, b=kbdOut, sel=selectKbd, out=out);
 }
