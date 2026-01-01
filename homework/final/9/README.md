@@ -22,7 +22,7 @@ Jack 是一種類似 Java 的物件導向語言，但在設計上為了配合課
 * **特殊關鍵字**
     * `do`：用於呼叫**沒有回傳值 (void)** 的函式。例如：`do function();`
     * `let`：用於變數賦值。例如：`let x = 1;`
-    * `Array`：沒有 `[]` 語法糖，必須使用 `Array.new(size)` 宣告與 `arr[i]` 存取。
+    * `Array`：沒有 `[]` 語法，必須使用 `Array.new(size)` 宣告與 `arr[i]` 存取。
 
 ## 2. 檔案結構與功能 (File Structure)
 
@@ -77,6 +77,9 @@ Jack 語言**沒有 Garbage Collection (GC)**，必須手動管理記憶體：
 * **LEFT / RIGHT**：左右移動飛機。
 * **SPACE**：發射子彈。
 * **Q**：離開遊戲。
+
+## 參考資料
+[Gemini對話](https://gemini.google.com/share/d5e0bb33810f)
 
 ---
 
