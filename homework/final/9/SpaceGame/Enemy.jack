@@ -1,0 +1,67 @@
+/** 簡單的敵機目標 */
+class Enemy {
+    field int x, y;
+    field int size;
+    field boolean movingRight;
+
+    /** 建構子 */
+    constructor Enemy new(int Ax, int Ay) {
+        let x = Ax;
+        let y = Ay;
+        let size = 20;
+        let movingRight = true;
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    /** 自動移動邏輯 */
+    method void update() {
+        do erase();
+        if (movingRight) {
+            let x = x + 2;
+            if ((x + size) > 510) { let movingRight = false; }
+        }
+        else { // moving Left
+            let x = x - 2;
+            if (x < 1) { let movingRight = true; }
+        }
+        let y = y + 1; // 每次更新 Y 軸 +1
+        // 如果掉出螢幕最下方，重置回頂部 (或者你可以判定為遊戲結束)
+        if (y > 230) {
+            let y = 10; // 暫時先讓它回到頂部循環
+        }
+        do draw();
+        return;
+    }
+
+    // 被擊中後重置位置
+    method void reset(int newX) {
+        do erase();
+        let x = newX;
+        do draw();
+        return;
+    }
+
+    // Getters for collision detection
+    method int getLeft() { return x; }
+    method int getRight() { return x + size; }
+    method int getTop() { return y; }
+    method int getBottom() { return y + size; }
+}

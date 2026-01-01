@@ -1,0 +1,63 @@
+/** 玩家控制的飛機 */
+class Player {
+    field int x, y; // 飛機中心點的頂部座標
+    field int width, height;
+
+    /** 建構子 */
+    constructor Player new(int Ax, int Ay) {
+        let x = Ax;
+        let y = Ay;
+        let width = 20;
+        let height = 15;
+        do draw();
+        return this;
+    }
+
+    /** 釋放記憶體 */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** 繪製飛機 (一個三角形) */
+    method void draw() {
+        do Screen.setColor(true);
+        // 畫一個簡單的三角形飛機
+        do Screen.drawLine(x, y, x - (width/2), y + height);
+        do Screen.drawLine(x, y, x + (width/2), y + height);
+        do Screen.drawLine(x - (width/2), y + height, x + (width/2), y + height);
+        return;
+    }
+
+    /** 擦除飛機 */
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x - (width/2), y, x + (width/2) + 1, y + height + 1);
+        return;
+    }
+
+    /** 向左移動 */
+    method void moveLeft() {
+        if (x > (width/2 + 2)) {
+            do erase();
+            let x = x - 4; // 移動速度
+            do draw();
+        }
+        return;
+    }
+
+    /** 向右移動 */
+    method void moveRight() {
+        if (x < (511 - (width/2 + 2))) {
+            do erase();
+            let x = x + 4; // 移動速度
+            do draw();
+        }
+        return;
+    }
+
+    // Getters 用於發射子彈和碰撞偵測
+    method int getX() { return x; }
+    method int getY() { return y; }
+    method int getWidth() { return width; }
+}

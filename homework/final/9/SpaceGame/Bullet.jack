@@ -1,0 +1,63 @@
+/** 玩家發射的子彈 */
+class Bullet {
+    field int x, y;
+    field int size;
+    field boolean active; // 子彈是否在畫面上的標記
+
+    /** 建構子: 在指定位置產生子彈 */
+    constructor Bullet new(int Ax, int Ay) {
+        let x = Ax;
+        let y = Ay;
+        let size = 4;
+        let active = true;
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    /** 更新子彈位置 */
+    method void update() {
+        // 如果已經不活躍，什麼都不做
+        if (~active) { return; }
+
+        do erase();
+        let y = y - 7; // 子彈飛行速度
+        
+        // 檢查是否飛出頂部
+        if (y < 0) {
+            let active = false;
+        } else {
+            do draw();
+        }
+        return;
+    }
+
+    method void deactivate() {
+        do erase();
+        let active = false;
+        return;
+    }
+
+    method boolean isActive() { return active; }
+    // Getters for collision detection
+    method int getLeft() { return x; }
+    method int getRight() { return x + size; }
+    method int getTop() { return y; }
+    method int getBottom() { return y + size; }
+}

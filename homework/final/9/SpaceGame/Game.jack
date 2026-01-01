@@ -1,0 +1,165 @@
+/** 遊戲核心控制器 */
+class Game {
+    field Player player;
+    field Enemy enemy;
+    // 我們使用陣列來管理多個子彈，限制最多同時 3 發以保持效能
+    field Array bullets; 
+    field int bulletCount;
+    field int score;
+    field boolean exit;
+    field boolean spacePressed;
+
+    /** 初始化遊戲 */
+    constructor Game new() {
+        let player = Player.new(256, 230); // 玩家在底部中間
+        let enemy = Enemy.new(10, 10);     // 敵人在左上角
+        
+        let bullets = Array.new(3); // 最多3發子彈
+        let bulletCount = 0;
+        
+        let score = 0;
+        let exit = false;
+
+        let spacePressed = false;
+        
+        do updateScoreDisplay();
+        return this;
+    }
+
+    /** 清理遊戲資源 */
+    method void dispose() {
+        var int i;
+        var Bullet b;
+        do player.dispose();
+        do enemy.dispose();
+        
+        // 清理所有殘留的子彈
+        let i = 0;
+        while (i < 3) {
+            let b = bullets[i];
+            if (~(b = null)) {
+                do b.dispose();
+            }
+            let i = i + 1;
+        }
+        do bullets.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** 更新分數顯示 */
+    method void updateScoreDisplay() {
+        do Output.moveCursor(0, 0);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
+        return;
+    }
+
+    /** 嘗試發射子彈 */
+    method void shoot() {
+        var int i;
+
+        do Output.printString("B");
+        // 如果場上子彈太多，則不能發射
+        if (bulletCount = 3) { return; }
+
+        // 尋找陣列中的空位 (null)
+        let i = 0;
+        while (i < 3) {
+            if (bullets[i] = null) {
+                // 在玩家當前位置上方產生子彈
+                let bullets[i] = Bullet.new(player.getX(), player.getY() - 5);
+                let bulletCount = bulletCount + 1;
+                return; // 發射成功，退出
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** 檢查子彈是否擊中敵人 (AABB 矩形碰撞) */
+    method boolean checkCollision(Bullet b, Enemy e) {
+        // 經典的 AABB 碰撞檢測算法
+        // 如果一個矩形的右側小於另一個的左側...等情況，則沒有碰撞
+        if (b.getRight() < e.getLeft()) { return false; }
+        if (b.getLeft() > e.getRight()) { return false; }
+        if (b.getBottom() < e.getTop()) { return false; }
+        if (b.getTop() > e.getBottom()) { return false; }
+        
+        // 如果上述都不成立，則發生碰撞
+        return true;
+    }
+
+    /** 遊戲主迴圈 */
+    method void run() {
+        var char key;
+        var int i;
+        var Bullet b;
+        var boolean isHit;
+
+        while (~exit) {
+            // 1. 處理輸入
+            let key = Keyboard.keyPressed();
+            if (key = 81) { let exit = true; } // 'q' key
+            if (key = 130) { do player.moveLeft(); } // Left arrow
+            if (key = 132) { do player.moveRight(); } // Right arrow
+            if (key = 32) {
+                // 只有當之前沒按住的時候，才發射
+                if (~spacePressed) {
+                    do shoot();
+                    let spacePressed = true; // 標記為已按下
+                }
+            } else {
+                // 如果沒有按空白鍵 (key 不等於 32)，解除鎖定
+                let spacePressed = false;
+            }
+
+            // 2. 更新敵人和子彈狀態
+            do enemy.update();
+
+            let i = 0;
+            while (i < 3) {
+                let b = bullets[i];
+                if (~(b = null)) {
+                    do b.update();
+
+                    // 檢查碰撞
+                    if (b.isActive()) {
+                        let isHit = checkCollision(b, enemy);
+                        if (isHit) {
+                            do b.deactivate();
+                            let score = score + 10;
+                            do updateScoreDisplay();
+                            // 簡單地將敵人重置到左側 (可以用隨機數產生器改進)
+                            do enemy.reset(10); 
+                        }
+                    }
+
+                    // 如果子彈飛出螢幕或擊中目標，清理記憶體並騰出陣列空間
+                    if (~b.isActive()) {
+                        do b.dispose();
+                        let bullets[i] = null;
+                        let bulletCount = bulletCount - 1;
+                    }
+                }
+                let i = i + 1;
+            }
+            // --- 新增：檢查敵人是否撞到玩家 (簡單判定 Y 軸高度) ---
+            // 假設玩家的 Y 是 230，如果敵人 Y 超過 210 代表非常接近了
+            if (enemy.getBottom() > 210) {
+                let exit = true; // 結束遊戲迴圈
+            }
+            // ------------------------------------------------
+            
+            // 3. 控制遊戲速度 (非常重要，否則會快到無法遊玩)
+            do Sys.wait(30); 
+        }
+        do Screen.clearScreen(); // 清空螢幕
+        do Output.moveCursor(10, 27); // 移動游標到螢幕中間
+        do Output.printString("GAME OVER");
+        do Output.moveCursor(12, 27);
+        do Output.printString("Score: ");
+        do Output.printInt(score);
+        return;
+    }
+}
