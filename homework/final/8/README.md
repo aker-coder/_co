@@ -60,3 +60,6 @@ python VMTranslator.py Path/To/Directory
 | **2** | `NestedCall` | `Sys.init`, `call`, Stack Frame 保存與恢復 | **開啟** |
 | **3** | `FibonacciElement` | 遞迴演算法 (Recursion), 多檔案連結 | **開啟** |
 | **4** | `StaticsTest` | 靜態變數命名空間 (`Class.i`) 獨立性 | **開啟** |
+
+## 參考資料
+[Gemini對話](https://gemini.google.com/share/ae4115456b6f)
