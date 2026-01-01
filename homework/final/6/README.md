@@ -8,15 +8,15 @@
 
 * **完整的指令支援**：能夠精確處理所有的 A 指令 (`@value`) 與 C 指令 (`dest=comp;jump`)。
 * **符號解析 (Symbol Resolution)**：
-    * 支援 **預定義符號** (如 `SCREEN`, `KBD`, `R0`~`R15`)。
-    * 支援 **標籤 (Labels)** (如 `(LOOP)`, `(END)`) 用於跳轉控制。
-    * 支援 **變數 (Variables)** (如 `@i`, `@sum`) 自動分配記憶體位址 (從 RAM[16] 開始)。
+   **預定義符號** (如 `SCREEN`, `KBD`, `R0`~`R15`)。
+   **標籤 (Labels)** (如 `(LOOP)`, `(END)`) 用於跳轉控制。
+   **變數 (Variables)** (如 `@i`, `@sum`) 自動分配記憶體位址 (從 RAM[16] 開始)。
 * **兩遍掃描 (Two-Pass Process)**：採用標準的兩遍掃描演算法，有效解決程式碼中「向前參考 (Forward Reference)」的標籤問題。
 * **強健的解析能力**：能自動忽略原始碼中的空白行與註解 (`//`)，並去除多餘空白。
 
 ## 📂 檔案結構
 
-本專案採用單一檔案實作 (`assembler.py`)，內部採用物件導向設計，包含三個核心類別：
+本專案採用單一檔案實作 (`Assembler.py`)，內部採用物件導向設計，包含三個核心類別：
 
 * **`Parser`**：
     * 負責讀取 `.asm` 檔案。
@@ -31,11 +31,13 @@
 
 ## 🛠️ 安裝與執行
 
-### 需求環境
-* Python 3.6 或以上版本
-
 ### 使用方式
 打開終端機 (Terminal) 或命令提示字元 (CMD)，切換到檔案所在目錄，執行以下指令：
 
 ```bash
-python assembler.py <你的檔案.asm>
+python Assembler.py <你的檔案.asm>
+```
+
+## 參考資料
+
+[Gemini對話](https://gemini.google.com/share/425c7180e773)
