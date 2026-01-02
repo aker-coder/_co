@@ -100,3 +100,6 @@ python JackAnalyzer.py ./ArrayTest/
 ## 🔜 下一步 (Next Steps)
 目前專案僅完成 **前端 (Front-end) 分析**，產出 XML。
 下一階段 (Project 11) 將擴充此專案，將 XML 輸出邏輯替換為 **VM Code Generation**，完成完整的 Jack 語言編譯器。將這邊全部用markdown語法寫給我
+
+## 參考資料
+[Gemini對話](https://gemini.google.com/share/ab75d62a16d1)
