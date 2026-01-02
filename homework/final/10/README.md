@@ -94,6 +94,7 @@ python JackAnalyzer.py ./ArrayTest/
 
 ## 📝 開發心得 (Notes)
 * Regex 的威力：Python 的 `re` 模組極大地簡化了 Tokenizer 的程式碼量，從原本可能的上百行縮減為精簡的定義。
+
 * 遞迴思維：編寫 CompilationEngine 時，核心在於完全信任「遞迴函式會正確處理剩下的部分」。只要定義好當前的語法規則，剩下的細節交給遞迴呼叫即可，這讓處理複雜的嵌套結構（如 `if` 內還有 `while`）變得直觀。
 
 ## 🔜 下一步 (Next Steps)
