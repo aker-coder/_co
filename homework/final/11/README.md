@@ -44,8 +44,8 @@ graph LR
 
 * **重大改變說明**：
 **比較 1：核心驅動邏輯**
-|特徵|第 10 章 (XML)|第 11 章 (VM)|
-|:---|:---|:---|
+| 特徵 | 第 10 章 (XML) | 第 11 章 (VM) |
+| :--- | :--- | :--- |
 |輸出工具|直接 `outfile.write('<tag>...')`|透過 `vm_writer.writePush(...)`|
 |變數處理|視為純文字 `<identifier> x </identifier>`|需查表 symbol_table.indexOf('x') 取得索引|
 |運算式輸|出中序 (Infix) XML|轉換為 後序 (Postfix) 指令 (`push a`, `push b`, `add`)|
