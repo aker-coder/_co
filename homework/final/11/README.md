@@ -5,7 +5,7 @@
 2. **系統架構圖**
 編譯器由五個核心模組組成，數據流向如下：
 
-```程式碼片段
+```bash 程式碼片段
 graph LR
     Input[.jack File] --> A[JackTokenizer]
     A --> B[CompilationEngine]
@@ -30,21 +30,22 @@ graph LR
 
 **階段一**：語法分析 (Syntax Analysis - Ch 10)
 
-**目標**：驗證程式碼語法是否正確，並產出 XML 語法樹。
+* **目標**：驗證程式碼語法是否正確，並產出 XML 語法樹。
 
-**輸出**：`<class>`, `<keyword> class </keyword>`, `<symbol> { </symbol>`
+* **輸出**：`<class>`, `<keyword> class </keyword>`, `<symbol> { </symbol>`
 
-**邏輯**：看到什麼就吐出什麼標籤。
+* **邏輯**：看到什麼就吐出什麼標籤。
 
 **階段二：代碼生成 (Code Generation - Ch 11)**
 
-**目標**：產出可執行的 VM 指令。
+* **目標**：產出可執行的 VM 指令。
 
-**輸出**：push local 0, add, pop static 1
+* **輸出**：push local 0, add, pop static 1
 
-**重大改變說明**：
+* **重大改變說明**：
 **比較 1：核心驅動邏輯**
 |特徵|第 10 章 (XML)|第 11 章 (VM)|
+|:---|:---|:---|
 |輸出工具|直接 `outfile.write('<tag>...')`|透過 `vm_writer.writePush(...)`|
 |變數處理|視為純文字 `<identifier> x </identifier>`|需查表 symbol_table.indexOf('x') 取得索引|
 |運算式輸|出中序 (Infix) XML|轉換為 後序 (Postfix) 指令 (`push a`, `push b`, `add`)|
