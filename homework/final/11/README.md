@@ -141,3 +141,6 @@ def compileTerm(self):
 * `SymbolTable.py`: 變數管理。
 
 * `VMWriter.py`: VM 指令輸出工具。
+
+## 參考資料
+[Gemini對話](https://gemini.google.com/share/d93da0f23a46)
